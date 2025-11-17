@@ -1,4 +1,4 @@
-# Bundle SDK v25.9.1
+# Bundle SDK Example
 ## Step 1
 1) Add your credentials in `.env` file
 
