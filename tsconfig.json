@@ -5,17 +5,14 @@
     "noImplicitAny": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "target": "es6",
+    "target": "esnext",
+    "noEmit": true,
     "noImplicitReturns": true,
     "noEmitOnError": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "esModuleInterop": true,
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"]
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "bundle/**/*.ts"],
+  "exclude": ["node_modules"]
 }
