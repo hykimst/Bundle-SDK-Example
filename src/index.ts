@@ -1,5 +1,4 @@
-import { Dictionary, MP_SDK, MpSdk, ShowcaseBundleWindow, Vector3 } from "../bundle/sdk";
-import { myClickListener } from "./components/MyClickListener";
+import { MP_SDK, MpSdk, ShowcaseBundleWindow } from "../bundle/sdk";
 import male02Obj from "../public/male02.obj";
 import male02Material from "../public/male02.mtl";
 /**
@@ -22,26 +21,6 @@ showcase.setAttribute(
   `/bundle/showcase.html?m=${modelId}&play=1&qs=1&log=0&applicationKey=${SDK_KEY}&ss=18&sr=-2.05,1.26`
 );
 let mpSdk: MpSdk;
-
-/**
- * DOM Elements
- * Copilot Suggestion: Load version.txt at runtime to avoid importing .txt as a module that TypeScript can't type-check
- */
-(async () => {
-  try {
-    const res = await fetch("/bundle/version.txt");
-    if (!res.ok) return;
-    const heading = document.getElementsByClassName(
-      "heading"
-    )[0] as HTMLElement;
-    const h1 = document.createElement("h1");
-    heading.appendChild(h1);
-    const version = (await res.text()).trim();
-    h1.textContent = `Bundle SDK v${version}`;
-  } catch (e) {
-    console.warn("Could not load version.txt", e);
-  }
-})();
 
 /**
  * Setup My Scene, Compoment, Node
