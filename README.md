@@ -11,3 +11,6 @@
 ## Step 2
 1) npm install
 2) npm start
+
+## VIDEO
+https://github.com/user-attachments/assets/1a24ff6e-8e8a-4b6a-88e1-49f6efb28833
