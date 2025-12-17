@@ -1,5 +1,7 @@
-import { Dictionary, MP_SDK, MpSdk, ShowcaseBundleWindow } from "../bundle/sdk";
-
+import { Dictionary, MP_SDK, MpSdk, ShowcaseBundleWindow, Vector3 } from "../bundle/sdk";
+import { myClickListener } from "./components/MyClickListener";
+import male02Obj from "../public/male02.obj";
+import male02Material from "../public/male02.mtl";
 /**
  * augment window with the MP_SDK property
  */
@@ -12,11 +14,14 @@ declare global {
 /**
  * Set Model Id and SDK Key
  */
-const showcase = document.getElementById('showcase') as HTMLIFrameElement;
+const showcase = document.getElementById("showcase") as HTMLIFrameElement;
 const SDK_KEY = process.env.SDK_KEY || "";
 const modelId = "76VYD7xqkCb";
-showcase.setAttribute("src", `/bundle/showcase.html?m=${modelId}&play=1&qs=1&log=0&applicationKey=${SDK_KEY}&ss=18&sr=-1.29,.92`);
-let mpSdk:MpSdk;
+showcase.setAttribute(
+  "src",
+  `/bundle/showcase.html?m=${modelId}&play=1&qs=1&log=0&applicationKey=${SDK_KEY}&ss=18&sr=-2.05,1.26`
+);
+let mpSdk: MpSdk;
 
 /**
  * DOM Elements
@@ -26,7 +31,9 @@ let mpSdk:MpSdk;
   try {
     const res = await fetch("/bundle/version.txt");
     if (!res.ok) return;
-    const heading = document.getElementsByClassName("heading")[0] as HTMLElement;
+    const heading = document.getElementsByClassName(
+      "heading"
+    )[0] as HTMLElement;
     const h1 = document.createElement("h1");
     heading.appendChild(h1);
     const version = (await res.text()).trim();
@@ -37,44 +44,120 @@ let mpSdk:MpSdk;
 })();
 
 /**
- * Add Video to all tags
- * @param mpSdk 
- * @param tagId 
+ * Setup My Scene, Compoment, Node
+ * @param mpSdk
  */
-const addVideoToAllTags = async (mpSdk: MpSdk, tagId: string) => {
-  // Register Attachment
-  mpSdk.Tag.registerAttachment(
-    'https://www.youtube.com/watch?v=577BMAWbf_o'
-  )
-    .then((attachmentId: string[]) => {
-      // Attach Video
-      mpSdk.Tag.attach(tagId, attachmentId[0]);
-    })
-    .catch((e: Error) => {
-      console.error('Error with tag attachment', e);
-    });
+const sceneComponentTest = async (SDK: MpSdk) => {
+  // 1 - SCENE OBJECT
+  const [sceneObject] = await SDK.Scene.createObjects(1);
+
+  // 2 - SCENE NODE
+  const node = sceneObject.addNode();
+  const position: MpSdk.Vector3 = {
+    x: -2.6879119873046875,
+    y: 3.8319289684295654,
+    z: 0.180706024169922
+  }
+  // Set this Node's positon
+  node.position.set(position.x,position.y,position.z);
+
+  // 3 - Add Components
+  // Add Ambient Light Component
+  node.addComponent("mp.ambientLight", { enabled: true });
+
+  // 3a - Add Directional Light Component
+  node.addComponent("mp.directionalLight", {
+    enabled: true,
+    color: {
+      r: 1,
+      g: 1,
+      b: 1,
+    },
+    intensity: 0.8,
+    position: {
+      x: 0,
+      y: 1,
+      z: 0,
+    },
+    target: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    debug: false,
+  });
+
+  // 3b- Add OBJ Loader Component -  https://matterport.github.io/showcase-sdk/sdkbundle_components_objloader.html
+  const objLoader = node.addComponent("mp.objLoader", {
+    url: male02Obj,
+    material: male02Material,
+    visible: true,
+    localScale: {
+      x: 0.005,
+      y: 0.005,
+      z: 0.005,
+    },
+    localPosition: {
+      x:0,
+      y:0,
+      z:0
+    },
+    localRotation: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    colliderEnabled: true,
+  }, 
+  "obj");
+  console.log("OBJ Loader Component:", objLoader);
+  
+  // 4 - Create a Rotation Node
+  const rotateNode = sceneObject.addNode();
+
+  // 4a - Add your rotation component
+  rotateNode.addComponent("mp.transformControls", {
+    mode: "rotate",
+    selection: node,
+    showX: true,
+    showY: true,
+    showZ: true,
+    size: 1.0,
+    visible: true,
+  });
+  // 4b - Set your rotation
+  rotateNode.position.set(
+    -2.6879119873046875,
+    3.8319289684295654,
+    0.180706024169922
+  );
+  // 4c - Set your rotation scale
+  rotateNode.scale.set(0.2, 0.2, 0.2);
+
+  // 5 - Start Node & Scene 
+  node.start();
+  rotateNode.start();
+  sceneObject.start();
 };
 
 /**
  * Connect to the Showcase SDK
  */
-showcase.addEventListener('load', async function() {
+showcase.addEventListener("load", async function () {
   const bundle = showcase.contentWindow as ShowcaseBundleWindow;
   try {
     mpSdk = await showcase.contentWindow.MP_SDK.connect(bundle);
-    mpSdk.Tag.data.subscribe({
-      onAdded(tagId:string, item:MpSdk.Tag.TagData, collection:Dictionary<any>) {
-        console.log('== [TAG] onAdded', tagId, item, collection);
-        addVideoToAllTags(mpSdk,tagId);
-      },
-    });
-  }
-  catch(e) {
+    sceneComponentTest(mpSdk);
+  } catch (e) {
     console.error(e);
     return;
   }
 
-  console.log('%c  Hello Bundle SDK! ', 'background: #333333; color: #00dd00',mpSdk);
+  console.log(
+    "%c  Hello Bundle SDK! ",
+    "background: #333333; color: #00dd00",
+    mpSdk
+  );
 });
 
 // declare this file is a module

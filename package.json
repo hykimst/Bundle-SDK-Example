@@ -1,5 +1,5 @@
 {
-  "name": "showcase-sdk-tutorial",
+  "name": "showcase-bundle-sdk-tutorial",
   "version": "1.0.0",
   "main": "index.ts",
   "repository": "git@ghe.matterport.com:hykim/Bundle-SDK.git",

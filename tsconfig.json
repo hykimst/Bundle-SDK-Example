@@ -11,7 +11,12 @@
     "noEmitOnError": true,
     "noUnusedLocals": false,
     "esModuleInterop": true,
-    "lib": ["esnext", "dom"]
+    "lib": ["esnext", "dom"],
+    "baseUrl": ".",
+    "paths": {
+      "public": ["public"],
+      "customComponent": ["src/component.ts"]
+    }
   },
   "include": ["src/**/*.ts", "bundle/**/*.ts"],
   "exclude": ["node_modules"]

@@ -18,7 +18,11 @@ module.exports = {
   },
   devtool: 'source-map',
   resolve: {
-    extensions: ['.js', '.ts']
+    extensions: ['.js', '.ts'],
+    alias: {
+      customComponent: path.resolve(__dirname, "src/component.ts"), // Custom Component
+      public: path.resolve(__dirname, "public"), // Public files
+    },
   },
   plugins: [
     new webpack.DefinePlugin(envKeys),
@@ -45,6 +49,14 @@ module.exports = {
       {
         test: /\.txt$/,
         type: "asset/source"
+      },
+      {
+        test: /\.obj$/,
+        type: "asset/resource"
+      },
+      {
+        test: /\.mtl$/,
+        type: "asset/resource"
       }
     ]
   },

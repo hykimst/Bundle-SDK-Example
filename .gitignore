@@ -6,3 +6,5 @@ bundle
 package-lock.json
 .DS_Store
 
+# SDK Key
+.env
