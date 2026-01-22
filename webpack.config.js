@@ -33,7 +33,10 @@ module.exports = {
       inject: true
     }),
     new CopyPlugin({
-      patterns: [{ from: path.resolve(__dirname, "bundle"), to: "bundle" }],
+      patterns: [
+        { from: path.resolve(__dirname, "bundle"), to: "bundle" },
+        { from: path.resolve(__dirname, "public"), to: "public" }, // Add this
+      ],
     }),
   ],
   module: {
@@ -65,6 +68,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
-    port: 8000
+    port: 8000,
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
   }
 };

@@ -1,6 +1,4 @@
 import { MP_SDK, MpSdk, ShowcaseBundleWindow } from "../bundle/sdk";
-import male02Obj from "../public/male02.obj";
-import male02Material from "../public/male02.mtl";
 /**
  * augment window with the MP_SDK property
  */
@@ -39,42 +37,29 @@ const sceneComponentTest = async (SDK: MpSdk) => {
   }
   // Set this Node's positon
   node.position.set(position.x,position.y,position.z);
+  node.quaternion.set(-0, 0.85, 0.75, .28);
 
   // 3 - Add Components
   // Add Ambient Light Component
-  node.addComponent("mp.ambientLight", { enabled: true });
-
-  // 3a - Add Directional Light Component
-  node.addComponent("mp.directionalLight", {
+  node.addComponent("mp.ambientLight", {
     enabled: true,
     color: {
-      r: 1,
-      g: 1,
-      b: 1,
+      r: 1, g: 1, b: 1
     },
-    intensity: 0.8,
-    position: {
-      x: 0,
-      y: 1,
-      z: 0,
-    },
-    target: {
-      x: 0,
-      y: 0,
-      z: 0,
-    },
-    debug: false,
+    intensity: 4, 
   });
 
+  const obj = "../public/cat.obj";
+  const material = "../public/cat.mtl";
   // 3b- Add OBJ Loader Component -  https://matterport.github.io/showcase-sdk/sdkbundle_components_objloader.html
   const objLoader = node.addComponent("mp.objLoader", {
-    url: male02Obj,
-    material: male02Material,
+    url: obj,
+    materialUrl: material,
     visible: true,
     localScale: {
-      x: 0.005,
-      y: 0.005,
-      z: 0.005,
+      x: 0.010,
+      y: 0.010,
+      z: 0.010,
     },
     localPosition: {
       x:0,
@@ -95,7 +80,7 @@ const sceneComponentTest = async (SDK: MpSdk) => {
   const rotateNode = sceneObject.addNode();
 
   // 4a - Add your rotation component
-  rotateNode.addComponent("mp.transformControls", {
+  const rotateComponent =rotateNode.addComponent("mp.transformControls", {
     mode: "rotate",
     selection: node,
     showX: true,
@@ -104,14 +89,19 @@ const sceneComponentTest = async (SDK: MpSdk) => {
     size: 1.0,
     visible: true,
   });
+
+  rotateComponent.onEvent = ((event:any, data:any) => {
+    console.log("OBJLOADER Changed Event:", event, data);
+  });
+  
   // 4b - Set your rotation
   rotateNode.position.set(
     -2.6879119873046875,
-    3.8319289684295654,
+    2.8319289684295654,
     0.180706024169922
   );
   // 4c - Set your rotation scale
-  rotateNode.scale.set(0.2, 0.2, 0.2);
+  rotateNode.scale.set(0.5, 0.5, 0.5);
 
   // 5 - Start Node & Scene 
   node.start();
