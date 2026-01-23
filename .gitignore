@@ -1,7 +1,7 @@
 # node modules
 node_modules
 bundle
-/dist
+dist
 
 # Config
 package-lock.json
