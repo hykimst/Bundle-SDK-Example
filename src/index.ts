@@ -19,7 +19,7 @@ declare global {
 const container = document.querySelector(".container") as HTMLDivElement;
 const showcaseIframe = document.getElementById("showcase") as HTMLIFrameElement;
 const SDK_KEY = process.env.SDK_KEY || "";
-const modelId = "";
+const modelId = "JGPnGQ6hosj";
 let mpSdk: MpSdk;
 const fullscreenBtn = document.querySelector('#fullscreenBtn') as HTMLButtonElement;
 let isFullscreen = false;
@@ -32,19 +32,32 @@ showcaseIframe.setAttribute(
 
 // Exit fullscreen 
 const exitFullscreen = async () => {
-  await document.exitFullscreen();
-  isFullscreen = false;
+  if(document.fullscreenElement){
+    await document.exitFullscreen();
+    console.log("Exiting fullscreen",document.fullscreenElement);
+  }
 };
 
 // Fullscreen event listener
+// How to handle changes, https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenchange_event#logging_fullscreenchange_events
 const fullscreenEventListener = () => {
   // Fullscreen toggle
   fullscreenBtn.addEventListener('click', () => {
-    if(isFullscreen){
+    console.log("is fullscreen?",document.fullscreenElement);
+    if(document.fullscreenElement){
       exitFullscreen();
     } else {
       container.requestFullscreen();
-      isFullscreen = true;
+    }
+  });
+
+  // Handle Escape key to exit fullscreen
+  window.addEventListener('keydown', (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      console.log("Escape key pressed");
+      if (document.fullscreenElement) {
+        exitFullscreen();
+      }
     }
   });
 };
